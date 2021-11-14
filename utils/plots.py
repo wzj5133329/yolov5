@@ -157,13 +157,15 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
     if np.max(images[0]) <= 1:
         images *= 255.0  # de-normalise (optional)
     bs, _, h, w = images.shape  # batch size, _, height, width
-    bs = min(bs, max_subplots)  # limit plot images
+    # bs = min(bs, max_subplots)  # limit plot images
+    bs = bs  # limit plot images
     ns = np.ceil(bs ** 0.5)  # number of subplots (square)
 
     # Build Image
     mosaic = np.full((int(ns * h), int(ns * w), 3), 255, dtype=np.uint8)  # init
     for i, im in enumerate(images):
-        if i == max_subplots:  # if last batch has fewer images than we expect
+        # if i == max_subplots:  # if last batch has fewer images than we expect
+        if i == bs:  # if last batch has fewer images than we expect
             break
         x, y = int(w * (i // ns)), int(h * (i % ns))  # block origin
         im = im.transpose(1, 2, 0)
@@ -171,10 +173,10 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
 
     # Resize (optional)
     scale = max_size / ns / max(h, w)
-    if scale < 1:
-        h = math.ceil(scale * h)
-        w = math.ceil(scale * w)
-        mosaic = cv2.resize(mosaic, tuple(int(x * ns) for x in (w, h)))
+    # if scale < 1:
+    #     h = math.ceil(scale * h)
+    #     w = math.ceil(scale * w)
+    #     mosaic = cv2.resize(mosaic, tuple(int(x * ns) for x in (w, h)))
 
     # Annotate
     fs = int((h + w) * ns * 0.01)  # font size
